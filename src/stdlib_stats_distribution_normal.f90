@@ -74,7 +74,7 @@ module stdlib_stats_distribution_normal
 
 contains
 
-    subroutine zigset
+    impure subroutine zigset
     ! Marsaglia & Tsang generator for random normals & random exponentials.
     ! Translated from C by Alan Miller (amiller@bigpond.net.au), released as public
     ! domain (https://jblevins.org/mirror/amiller/)
@@ -113,9 +113,9 @@ contains
 
 
 
-    function rvs_norm_0_rsp( ) result(res)
+    impure function rvs_norm_0_rsp( ) result(res)
     !
-    ! Standard normal random vairate (0,1)
+    ! Standard normal random variate (0,1)
     !
         real(sp) :: res
         real(sp), parameter  ::  r = 3.442619855899_sp, rr = 1.0_sp / r
@@ -156,9 +156,9 @@ contains
         end if
     end function rvs_norm_0_rsp
 
-    function rvs_norm_0_rdp( ) result(res)
+    impure function rvs_norm_0_rdp( ) result(res)
     !
-    ! Standard normal random vairate (0,1)
+    ! Standard normal random variate (0,1)
     !
         real(dp) :: res
         real(dp), parameter  ::  r = 3.442619855899_dp, rr = 1.0_dp / r
@@ -210,8 +210,8 @@ contains
         real(sp), intent(in) :: loc, scale
         real(sp) :: res
 
-        if(scale == 0._sp) call error_stop("Error(rvs_norm): Normal"       &
-            //" distribution scale parameter must be non-zero")
+        !if(scale == 0._sp) call error_stop("Error(rvs_norm): Normal"       &
+        !    //" distribution scale parameter must be non-zero")
         res = rvs_norm_0_rsp(  )
         res = res * scale + loc
     end function rvs_norm_rsp
@@ -224,8 +224,8 @@ contains
         real(dp), intent(in) :: loc, scale
         real(dp) :: res
 
-        if(scale == 0._dp) call error_stop("Error(rvs_norm): Normal"       &
-            //" distribution scale parameter must be non-zero")
+        !if(scale == 0._dp) call error_stop("Error(rvs_norm): Normal"       &
+        !    //" distribution scale parameter must be non-zero")
         res = rvs_norm_0_rdp(  )
         res = res * scale + loc
     end function rvs_norm_rdp
@@ -233,8 +233,7 @@ contains
 
 
 
-    impure elemental &
-    function rvs_norm_csp(loc, scale) result(res)
+    impure elemental function rvs_norm_csp(loc, scale) result(res)
     !
     ! Normally distributed complex. The real part and imaginary part are       &
     ! independent of each other.
@@ -248,8 +247,7 @@ contains
         res = cmplx(tr, ti, kind=sp)
     end function rvs_norm_csp
 
-    impure elemental &
-    function rvs_norm_cdp(loc, scale) result(res)
+    impure elemental function rvs_norm_cdp(loc, scale) result(res)
     !
     ! Normally distributed complex. The real part and imaginary part are       &
     ! independent of each other.
@@ -266,7 +264,7 @@ contains
 
 
 
-    function rvs_norm_array_rsp(loc, scale, array_size) result(res)
+    impure function rvs_norm_array_rsp(loc, scale, array_size) result(res)
         real(sp), intent(in) :: loc, scale
         integer, intent(in) :: array_size
         real(sp) :: res(array_size)
@@ -274,8 +272,8 @@ contains
         real(sp) ::  x, y, re
         integer :: hz, iz, i
 
-        if(scale == 0._sp) call error_stop("Error(rvs_norm_array): Normal" &
-            //"distribution scale parameter must be non-zero")
+        !if(scale == 0._sp) call error_stop("Error(rvs_norm_array): Normal" &
+        !    //"distribution scale parameter must be non-zero")
         if(.not. zig_norm_initialized) call zigset
         do i = 1, array_size
             iz = 0
@@ -314,7 +312,7 @@ contains
         end do
     end function rvs_norm_array_rsp
 
-    function rvs_norm_array_rdp(loc, scale, array_size) result(res)
+    impure function rvs_norm_array_rdp(loc, scale, array_size) result(res)
         real(dp), intent(in) :: loc, scale
         integer, intent(in) :: array_size
         real(dp) :: res(array_size)
@@ -322,8 +320,8 @@ contains
         real(dp) ::  x, y, re
         integer :: hz, iz, i
 
-        if(scale == 0._dp) call error_stop("Error(rvs_norm_array): Normal" &
-            //"distribution scale parameter must be non-zero")
+        !if(scale == 0._dp) call error_stop("Error(rvs_norm_array): Normal" &
+        !    //"distribution scale parameter must be non-zero")
         if(.not. zig_norm_initialized) call zigset
         do i = 1, array_size
             iz = 0
@@ -365,7 +363,7 @@ contains
 
 
 
-    function rvs_norm_array_csp(loc, scale, array_size) result(res)
+    impure function rvs_norm_array_csp(loc, scale, array_size) result(res)
         complex(sp), intent(in) :: loc, scale
         integer, intent(in) :: array_size
         integer :: i
@@ -379,7 +377,7 @@ contains
         end do
     end function rvs_norm_array_csp
 
-    function rvs_norm_array_cdp(loc, scale, array_size) result(res)
+    impure function rvs_norm_array_cdp(loc, scale, array_size) result(res)
         complex(dp), intent(in) :: loc, scale
         integer, intent(in) :: array_size
         integer :: i
@@ -396,7 +394,7 @@ contains
 
 
 
-    impure elemental function pdf_norm_rsp(x, loc, scale) result(res)
+    elemental function pdf_norm_rsp(x, loc, scale) result(res)
     !
     ! Normal distribution probability density function
     !
@@ -404,13 +402,13 @@ contains
         real(sp) :: res
         real(sp), parameter :: sqrt_2_pi = sqrt(2.0_sp * acos(-1.0_sp))
 
-        if(scale == 0._sp) call error_stop("Error(pdf_norm): Normal"       &
-            //"distribution scale parameter must be non-zero")
+        !if(scale == 0._sp) call error_stop("Error(pdf_norm): Normal"       &
+        !    //"distribution scale parameter must be non-zero")
         res = exp(- 0.5_sp * ((x - loc) / scale) * (x - loc) / scale) /    &
               (sqrt_2_Pi * scale)
     end function pdf_norm_rsp
 
-    impure elemental function pdf_norm_rdp(x, loc, scale) result(res)
+    elemental function pdf_norm_rdp(x, loc, scale) result(res)
     !
     ! Normal distribution probability density function
     !
@@ -418,8 +416,8 @@ contains
         real(dp) :: res
         real(dp), parameter :: sqrt_2_pi = sqrt(2.0_dp * acos(-1.0_dp))
 
-        if(scale == 0._dp) call error_stop("Error(pdf_norm): Normal"       &
-            //"distribution scale parameter must be non-zero")
+        !if(scale == 0._dp) call error_stop("Error(pdf_norm): Normal"       &
+        !    //"distribution scale parameter must be non-zero")
         res = exp(- 0.5_dp * ((x - loc) / scale) * (x - loc) / scale) /    &
               (sqrt_2_Pi * scale)
     end function pdf_norm_rdp
@@ -427,7 +425,7 @@ contains
 
 
 
-    impure elemental function pdf_norm_csp(x, loc, scale) result(res)
+    elemental function pdf_norm_csp(x, loc, scale) result(res)
         complex(sp), intent(in) :: x, loc, scale
         real(sp) :: res
 
@@ -435,7 +433,7 @@ contains
         res = res * pdf_norm_rsp(x % im, loc % im, scale % im)
     end function pdf_norm_csp
 
-    impure elemental function pdf_norm_cdp(x, loc, scale) result(res)
+    elemental function pdf_norm_cdp(x, loc, scale) result(res)
         complex(dp), intent(in) :: x, loc, scale
         real(dp) :: res
 
@@ -446,7 +444,7 @@ contains
 
 
 
-    impure elemental function cdf_norm_rsp(x, loc, scale) result(res)
+    elemental function cdf_norm_rsp(x, loc, scale) result(res)
     !
     ! Normal distribution cumulative distribution function
     !
@@ -454,12 +452,12 @@ contains
         real(sp) :: res
         real(sp), parameter :: sqrt_2 = sqrt(2.0_sp)
 
-        if(scale == 0._sp) call error_stop("Error(cdf_norm): Normal"       &
-            //"distribution scale parameter must be non-zero")
+        !if(scale == 0._sp) call error_stop("Error(cdf_norm): Normal"       &
+        !    //"distribution scale parameter must be non-zero")
         res = erfc(- (x - loc) / (scale * sqrt_2)) / 2.0_sp
     end function cdf_norm_rsp
 
-    impure elemental function cdf_norm_rdp(x, loc, scale) result(res)
+    elemental function cdf_norm_rdp(x, loc, scale) result(res)
     !
     ! Normal distribution cumulative distribution function
     !
@@ -467,15 +465,15 @@ contains
         real(dp) :: res
         real(dp), parameter :: sqrt_2 = sqrt(2.0_dp)
 
-        if(scale == 0._dp) call error_stop("Error(cdf_norm): Normal"       &
-            //"distribution scale parameter must be non-zero")
+        !if(scale == 0._dp) call error_stop("Error(cdf_norm): Normal"       &
+        !    //"distribution scale parameter must be non-zero")
         res = erfc(- (x - loc) / (scale * sqrt_2)) / 2.0_dp
     end function cdf_norm_rdp
 
 
 
 
-    impure elemental function cdf_norm_csp(x, loc, scale) result(res)
+    elemental function cdf_norm_csp(x, loc, scale) result(res)
         complex(sp), intent(in) :: x, loc, scale
         real(sp) :: res
 
@@ -483,7 +481,7 @@ contains
         res = res * cdf_norm_rsp(x % im, loc % im, scale % im)
     end function cdf_norm_csp
 
-    impure elemental function cdf_norm_cdp(x, loc, scale) result(res)
+    elemental function cdf_norm_cdp(x, loc, scale) result(res)
         complex(dp), intent(in) :: x, loc, scale
         real(dp) :: res
 
