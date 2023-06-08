@@ -372,8 +372,10 @@ contains
         real(sp), intent(in) :: x, lambda
         real(sp) :: res
 
-        if ((lambda <= 0._sp) .or. (x < 0._sp)) then
+        if (lambda <= 0._sp) then
             res = ieee_value(1._sp, ieee_quiet_nan)
+        else if (x < 0._sp) then
+            res = 0._sp
         else
             res = exp(- x * lambda) * lambda
         end if
@@ -386,8 +388,10 @@ contains
         real(dp), intent(in) :: x, lambda
         real(dp) :: res
 
-        if ((lambda <= 0._dp) .or. (x < 0._dp)) then
+        if (lambda <= 0._dp) then
             res = ieee_value(1._dp, ieee_quiet_nan)
+        else if (x < 0._dp) then
+            res = 0._dp
         else
             res = exp(- x * lambda) * lambda
         end if
@@ -424,8 +428,10 @@ contains
         real(sp), intent(in) :: x, lambda
         real(sp) :: res
 
-        if ((lambda <= 0._sp) .or. (x < 0._sp)) then
+        if (lambda <= 0._sp) then
             res = ieee_value(1._sp, ieee_quiet_nan)
+        else if (x < 0._sp) then
+            res = 0._sp
         else
             res = 1.0_sp - exp(- x * lambda)
         end if
@@ -438,8 +444,10 @@ contains
         real(dp), intent(in) :: x, lambda
         real(dp) :: res
 
-        if ((lambda <= 0._dp) .or. (x < 0._dp)) then
+        if (lambda <= 0._dp) then
             res = ieee_value(1._dp, ieee_quiet_nan)
+        else if (x < 0._dp) then
+            res = 0._dp
         else
             res = 1.0_dp - exp(- x * lambda)
         end if
